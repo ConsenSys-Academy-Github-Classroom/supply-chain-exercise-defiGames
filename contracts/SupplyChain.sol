@@ -8,7 +8,7 @@ contract SupplyChain {
   // <skuCount>
   uint public skuCount;
   // <items mapping>
-  mapping (address => uint) public items;
+  mapping (uint => Item) public items;
   // <enum State: ForSale, Sold, Shipped, Received>
   enum State{ ForSale, Sold, Shipped, Received}
   // <struct Item: name, sku, price, state, seller, and buyer>
@@ -103,18 +103,18 @@ contract SupplyChain {
     // 4. return true
 
     // hint:
-    // items[skuCount] = Item({
-    //  name: _name, 
-    //  sku: skuCount, 
-    //  price: _price, 
-    //  state: State.ForSale, 
-    //  seller: msg.sender, 
-    //  buyer: address(0)
-    //});
-    //
-    //skuCount = skuCount + 1;
-    // emit LogForSale(skuCount);
-    // return true;
+    items[skuCount] = Item({
+      name: _name, 
+      sku: skuCount, 
+      price: _price, 
+      state: State.ForSale, 
+      seller: msg.sender, 
+      buyer: address(0)
+    });
+    
+    skuCount = skuCount + 1;
+     emit LogForSale(skuCount);
+     return true;
   }
 
   // Implement this buyItem function. 
@@ -128,7 +128,9 @@ contract SupplyChain {
   //    - check the value after the function is called to make 
   //      sure the buyer is refunded any excess ether sent. 
   // 6. call the event associated with this function!
-  function buyItem(uint sku) public {}
+  function buyItem(uint sku) public payable {
+    items[sku].buyer = msg.sender;
+  }
 
   // 1. Add modifiers to check:
   //    - the item is sold already 
